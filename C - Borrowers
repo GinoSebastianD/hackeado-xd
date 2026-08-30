@@ -1,0 +1,92 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+
+    vector<pair<string, string>> bibleo;
+    string linea;
+
+    while (getline(cin, linea)) {
+
+        if (linea == "END") {
+            break;
+        }
+
+        size_t pos = linea.find("\" by ");
+        string titulo = linea.substr(0, pos + 1);
+        string autor = linea.substr(pos + 5);
+
+        bibleo.push_back({ titulo, autor });
+    }
+
+    sort(bibleo.begin(), bibleo.end(), [](auto& a, auto& b) {
+        if (a.second != b.second)
+            return a.second < b.second;
+
+        return a.first < b.first;
+        });
+
+    vector<pair<string, string>> prestados;
+    vector<pair<string, string>> devueltos;
+    string instruccion;
+
+    while (cin >> instruccion) {
+        if (instruccion == "BORROW") {
+            string titulo;
+            getline(cin, titulo);
+            titulo.erase(0, 1);
+            auto it = find_if(bibleo.begin(), bibleo.end(), [&](auto& libro) {
+                return libro.first == titulo;
+                });
+            prestados.push_back(*it);
+            bibleo.erase(it);
+        }
+        else if (instruccion == "RETURN") {
+            string titulo;
+            getline(cin, titulo);
+            titulo.erase(0, 1);
+            auto it = find_if(prestados.begin(), prestados.end(), [&](auto& libro) {
+                return libro.first == titulo;
+                });
+            devueltos.push_back(*it);
+            prestados.erase(it);
+        }
+        else if (instruccion == "SHELVE") {
+            sort(devueltos.begin(), devueltos.end(), [](auto& a, auto& b) {
+                if (a.second != b.second)
+                    return a.second < b.second;
+                return a.first < b.first;
+                });
+            for (auto libro : devueltos) {
+                size_t i = 0;
+                while (i < bibleo.size()) {
+                    if (bibleo[i].second > libro.second)
+                        break;
+                    if (bibleo[i].second == libro.second && bibleo[i].first > libro.first)
+                        break;
+                    i++;
+                }
+                if (i == 0) {
+                    cout << "Put " << libro.first << " first\n";
+                }
+                else {
+                    cout << "Put " << libro.first << " after " << bibleo[i - 1].first << "\n";
+                }
+                bibleo.insert(bibleo.begin() + i, libro);
+            }
+            devueltos.clear();
+            cout << "END\n";
+        }
+        else if (instruccion == "END") {
+            break;
+        }
+    }
+
+    return 0;
+}
+
+
