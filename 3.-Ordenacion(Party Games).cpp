@@ -7,30 +7,32 @@ int main()
     int n;
     while (cin >> n && n)
     {
-        vector<string> v(n);
+        vector<string> vec(n);
         for (int i = 0; i < n; i++)
-            cin >> v[i];
-        sort(v.begin(), v.end());
+            cin >> vec[i];
+        sort(vec.begin(), vec.end());
      
 
-        string x = v[(n / 2) - 1];
-        string y = v[n / 2];
+        string x = vec[(n / 2) - 1];
+        string y = vec[n / 2];
 
-        string ans = "A";
+        string rpt = "A";
         int i = 0;
         while (i < x.size())
         {
-            while (ans[i] <= 'Z' && ans < x)
-                ans[i]++;
-            if (ans[i] <= 'Z' && ans >= x && ans < y)
+            while (rpt[i] <= 'Z' && rpt < x)
+                rpt[i]++;
+            if (rpt[i] <= 'Z' && rpt >= x && rpt < y)
             {
-                printf("%s\n", ans.c_str());
+                cout << rpt.c_str()<<"\n";
                 break;
             }
-            if (ans[i] != x[i])
-                ans[i]--;
+            if (rpt[i] != x[i])
+                rpt[i]--;
             i++;
-            ans += "A";
+            rpt += "A";
         }
     }
 }
+
+
