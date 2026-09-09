@@ -1,22 +1,18 @@
 #include "vector"
 #include "iostream"
-#include "queue"
-#include "list"
+#include "deque"
 #include "algorithm"
 #include "map"
+#include "queue"
 #include "unordered_map"
-
 using namespace std;
 
-
-
 int main() {
-	
-	int n; 
+	int n;
 	int scenario = 1;
-	while (cin>>n)
+	while (cin >> n && n !=0)
 	{
-		map<int, vector<int>> mapa;
+		map<int, int> mapa;
 		for (int i = 0; i < n; i++)
 		{
 			int j;
@@ -25,54 +21,40 @@ int main() {
 			{
 				int l;
 				cin >> l;
-				mapa[i+1].push_back(l);
+				mapa[l] = i + 1;
 			}
 		}
-		cout<<"Scenario #" << scenario++ << "\n";
-		queue<int> cola_auxiliar;   
-		unordered_map<int, queue<int>> colas;
-		string palabra;
-		while (palabra != "STOP")
+		cout << "Scenario #" << scenario++ << "\n";
+
+		vector<queue<int>> equipos(n + 1);
+		queue<int> cola;
+		string proceso;
+		while (cin >> proceso && proceso != "STOP")
 		{
-			string proceso;
-			cin >> proceso;
-			int equipo_actual = -1;
-			if (proceso =="ENQUEUE")
+			if (proceso == "ENQUEUE")
 			{
-				int num;
-				cin >> num;
-				for (auto it : mapa)
+				int x;
+				cin >> x;
+				int indice = mapa[x];
+
+				if (equipos[indice].empty())
 				{
-					int indice = it.first;
-					vector<int> integrantes = it.second;
-					if (find(integrantes.begin(), integrantes.end(), num) != integrantes.end()) {
-						equipo_actual = indice;
-						break;
-					}
+					cola.push(indice);
 				}
-				if (colas[equipo_actual].empty())
-				{
-					cola_auxiliar.push(equipo_actual);
-				}
-				colas[equipo_actual].push(num);
+				equipos[indice].push(x);
 			}
-			else if (proceso == "DEQUEUE")
+			else
 			{
-				
-				int equipo_atendido = cola_auxiliar.front();
-
-				int elemento = colas[equipo_atendido].front();
-				colas[equipo_atendido].pop();
-				cout << elemento << "\n";
-
-				if (colas[equipo_atendido].empty()) {
-					cola_auxiliar.pop();
+				int indice = cola.front();
+				int toRemove = equipos[indice].front();
+				equipos[indice].pop();
+				cout << toRemove << "\n";
+				if (equipos[indice].empty())
+				{
+					cola.pop();
 				}
 			}
 		}
 		cout << "\n";
-
 	}
-
-
 }
