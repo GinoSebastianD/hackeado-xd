@@ -5,6 +5,15 @@
 using namespace std;
 
 
+
+
+
+
+
+
+
+
+
 void solve(int casos) {
 	vector<int> vec(10, 0);
 	int total = 0;
